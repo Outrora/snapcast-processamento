@@ -35,7 +35,7 @@ public class VideoUploadConsumer {
             userCaseProcessar.processarArquivo(evento);
         } catch (Exception e) {
             log.log(Level.SEVERE, e.getMessage());
-            throw new Exception(e);
+            throw e;
         }
 
     }

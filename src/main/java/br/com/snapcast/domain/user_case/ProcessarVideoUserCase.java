@@ -3,9 +3,6 @@ package br.com.snapcast.domain.user_case;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Java2DFrameConverter;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,8 +13,8 @@ import br.com.snapcast.domain.entities.StatusVideo;
 import br.com.snapcast.domain.entities.VideoEvento;
 import br.com.snapcast.port.BaixarArquivo;
 import br.com.snapcast.port.EnviarArquivo;
+import br.com.snapcast.port.local.ExtrairFrames;
 import br.com.snapcast.event.producer.AtualizarStatusEvent;
-import br.com.snapcast.exception.ErroAoProcessarArquivo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -28,8 +25,7 @@ import lombok.extern.java.Log;
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class ProcessarVideoUserCase {
 
-    // User Case
-    private ExtrairImagemUserCase extrairImagem;
+    private ExtrairFrames extrairFrames;
     private ZiparArquivoUserCase ziparArquivo;
 
     // Ports
@@ -49,7 +45,7 @@ public class ProcessarVideoUserCase {
         String videoTemporario = baixarArquivo.baixarArquivo(evento);
 
         // Separando Os Frames
-        Integer quantidadeFramesSalvo = separarFramesVideo(videoTemporario, pathTemporario);
+        Integer quantidadeFramesSalvo = extrairFrames.separarFramesVideo(videoTemporario, pathTemporario);
 
         // Zipando os Frames
         String pathZip = ziparArquivo.ziparFrames(pathTemporario.toString(), evento.nomeDoVideo());
@@ -64,19 +60,6 @@ public class ProcessarVideoUserCase {
         atualizarStatus.enviarStatusVideo(StatusVideo.videoProcessado(evento.id(), quantidadeFramesSalvo));
 
         log.log(Level.INFO, "🎥 Finalizado processamento do vídeo: {0}", evento.nomeDoVideo());
-    }
-
-    private int separarFramesVideo(String inputDiretorio, Path pathTemporario) throws IOException {
-        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inputDiretorio);
-                Java2DFrameConverter converter = new Java2DFrameConverter()) {
-
-            grabber.start();
-            return extrairImagem.processarFrames(grabber, converter, pathTemporario);
-
-        } catch (Exception e) {
-            log.log(Level.SEVERE, "❌ Erro ao processar vídeo: " + e.getMessage(), e);
-            throw new ErroAoProcessarArquivo();
-        }
     }
 
     private void deletandoArquivosTemporarios(List<String> arquivos) {

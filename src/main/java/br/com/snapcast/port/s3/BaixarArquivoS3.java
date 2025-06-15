@@ -38,6 +38,7 @@ public class BaixarArquivoS3 implements BaixarArquivo {
     @Override
     public String baixarArquivo(VideoEvento video) {
         try {
+            log.info(video.nomeDoVideoComExtensao());
             var temp = baixarArquivoTemp(video.nomeDoVideoComExtensao());
 
             Path targetPath = Path.of(config.getDiretorioVideos(), video.nomeDoVideoComExtensao());

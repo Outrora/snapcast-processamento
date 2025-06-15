@@ -8,8 +8,8 @@ public record VideoEvento(
         String caminhoVideo) {
 
     public String nomeDoVideo() {
-        int indexPonto = nome.lastIndexOf('.');
-        return indexPonto > 0 ? nome.substring(0, indexPonto) : nome;
+        int indexPonto = id.lastIndexOf('.');
+        return indexPonto > 0 ? id.substring(0, indexPonto) : id;
     }
 
     public String nomeDoVideoComExtensao() {
