@@ -1,4 +1,4 @@
-package br.com.snapcast.domain.port;
+package br.com.snapcast.port;
 
 public interface EnviarArquivo {
 

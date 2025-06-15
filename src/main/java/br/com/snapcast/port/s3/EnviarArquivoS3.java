@@ -1,8 +1,9 @@
-package br.com.snapcast.domain.port.s3;
+package br.com.snapcast.port.s3;
 
 import java.nio.file.Path;
 
-import br.com.snapcast.domain.port.EnviarArquivo;
+import br.com.snapcast.config.ClienteS3;
+import br.com.snapcast.port.EnviarArquivo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;

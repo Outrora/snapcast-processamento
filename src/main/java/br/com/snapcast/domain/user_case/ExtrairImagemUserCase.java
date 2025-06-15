@@ -10,7 +10,7 @@ import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
-import br.com.snapcast.domain.port.local.SalvarFramesTemporario;
+import br.com.snapcast.port.local.SalvarFramesTemporario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;

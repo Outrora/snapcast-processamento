@@ -1,4 +1,4 @@
-package br.com.snapcast.domain.port.local;
+package br.com.snapcast.port.local;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,8 +8,9 @@ import java.nio.file.StandardCopyOption;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import br.com.snapcast.domain.entities.VideoEvento;
-import br.com.snapcast.domain.port.BaixarArquivo;
+
 import br.com.snapcast.exception.ErroAoProcessarArquivo;
+import br.com.snapcast.port.BaixarArquivo;
 import lombok.extern.java.Log;
 
 @Log

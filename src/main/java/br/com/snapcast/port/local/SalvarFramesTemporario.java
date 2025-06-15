@@ -1,4 +1,4 @@
-package br.com.snapcast.domain.port.local;
+package br.com.snapcast.port.local;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

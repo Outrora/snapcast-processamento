@@ -1,13 +1,14 @@
-package br.com.snapcast.domain.port.s3;
+package br.com.snapcast.port.s3;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import br.com.snapcast.config.ClienteS3;
 import br.com.snapcast.config.Configuracoes;
 import br.com.snapcast.domain.entities.VideoEvento;
-import br.com.snapcast.domain.port.BaixarArquivo;
+import br.com.snapcast.port.BaixarArquivo;
 import br.com.snapcast.exception.ErroAoBaixarArquivo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

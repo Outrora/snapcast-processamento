@@ -1,4 +1,4 @@
-package br.com.snapcast.domain.port.s3;
+package br.com.snapcast.config;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
