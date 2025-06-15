@@ -5,11 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import br.com.snapcast.config.Configuracoes;
 import br.com.snapcast.domain.entities.VideoEvento;
 import br.com.snapcast.domain.port.BaixarArquivo;
+import br.com.snapcast.exception.ErroAoBaixarArquivo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -28,11 +27,11 @@ public class BaixarArquivoS3 implements BaixarArquivo {
 
     private ResponseInputStream<GetObjectResponse> baixarArquivoTemp(String key) {
         GetObjectRequest request = GetObjectRequest.builder()
-                .bucket(s3.BUCKET_NAME)
+                .bucket(s3.getBucket())
                 .key(key)
                 .build();
 
-        return s3.client.getObject(request);
+        return s3.pegarS3().getObject(request);
     }
 
     @Override
@@ -40,18 +39,17 @@ public class BaixarArquivoS3 implements BaixarArquivo {
         try {
             var temp = baixarArquivoTemp(video.nomeDoVideoComExtensao());
 
-            Path targetPath = Path.of(config.getBaseStoragePath(), video.nomeDoVideoComExtensao());
+            Path targetPath = Path.of(config.getDiretorioVideos(), video.nomeDoVideoComExtensao());
             Files.createDirectories(targetPath.getParent());
 
             Files.copy(temp, targetPath, StandardCopyOption.REPLACE_EXISTING);
 
-            log.info("Arquivo " + video.nomeDoVideoComExtensao() + " baixado com sucesso para " + targetPath);
+            log.info("📥 Arquivo " + video.nomeDoVideoComExtensao() + " baixado com sucesso para " + targetPath);
 
             return targetPath.toString();
 
         } catch (IOException e) {
-            log.severe("Erro ao baixar arquivo " + video.nomeDoVideoComExtensao() + ": " + e.getMessage());
-            throw new RuntimeException("Falha ao baixar arquivo do S3", e);
+            throw new ErroAoBaixarArquivo(video, e);
         }
 
     }

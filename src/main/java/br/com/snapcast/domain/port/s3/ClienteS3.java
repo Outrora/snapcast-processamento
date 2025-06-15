@@ -1,6 +1,9 @@
 package br.com.snapcast.domain.port.s3;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import jakarta.enterprise.context.ApplicationScoped;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -8,13 +11,19 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 @ApplicationScoped
 @NoArgsConstructor
+@Getter
 public class ClienteS3 {
-    public final String REGIAO = "us-east-1";
-    public final S3Client client = S3Client.builder()
-            .region(Region.of(System.getProperty("aws.region", REGIAO)))
-            .credentialsProvider(DefaultCredentialsProvider.builder().build())
-            .build();
+    @ConfigProperty(name = "aws.regiao", defaultValue = "us-east-1")
+    private String regiao;
 
-    public final String BUCKET_NAME = "snapcastvideos";
+    @ConfigProperty(name = "aws.bucket.name", defaultValue = "snapcastvideos")
+    private String bucket;
+
+    public S3Client pegarS3() {
+        return S3Client.builder()
+                .region(Region.of(System.getProperty("aws.region", regiao)))
+                .credentialsProvider(DefaultCredentialsProvider.builder().build())
+                .build();
+    }
 
 }

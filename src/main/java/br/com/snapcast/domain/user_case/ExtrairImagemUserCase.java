@@ -4,16 +4,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
-import br.com.snapcast.domain.port.SalvarFramesTemporario;
+import br.com.snapcast.domain.port.local.SalvarFramesTemporario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -26,36 +23,32 @@ public class ExtrairImagemUserCase {
 
     SalvarFramesTemporario salvarFrames;
 
-    public void processarFrames(FFmpegFrameGrabber grabber, Java2DFrameConverter converter, Path outputDiretorio)
-            throws Exception {
+    private static final int FRAME_SKIP = 10;
 
-        int[] frameNumber = { 0 };
+    public int processarFrames(
+            FFmpegFrameGrabber grabber,
+            Java2DFrameConverter converter,
+            Path outputDiretorio)
+            throws IOException {
+
+        int frameNumber = 0;
+        int quantidadesFramesSalvos = 0;
         Frame frame;
 
         criarDiretorioSeNecessario(outputDiretorio);
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         while ((frame = grabber.grabImage()) != null) {
+            frameNumber++;
+            if (frameNumber % FRAME_SKIP != 0)
+                continue;
             BufferedImage image = converter.convert(frame);
             if (image != null) {
-                CompletableFuture<Void> future = CompletableFuture
-                        .runAsync(() -> salvarFrames.salvarFrame(image, outputDiretorio.toString(), frameNumber[0]));
-                futures.add(future);
-                frameNumber[0]++;
+                salvarFrames.salvarFrame(image, outputDiretorio.toString(), frameNumber);
+                quantidadesFramesSalvos++;
             }
         }
 
-        CompletableFuture
-                .allOf(futures.toArray(new CompletableFuture[0]))
-                .whenComplete((result, throwable) -> {
-                    if (throwable != null) {
-                        log.log(Level.SEVERE, "❌ Erro ao processar frames", throwable);
-                    } else {
-                        log.log(Level.INFO, "✅ Processamento concluído. Total de frames extraídos: {0}",
-                                frameNumber[0]);
-                    }
-                })
-                .join();
+        return quantidadesFramesSalvos;
 
     }
 

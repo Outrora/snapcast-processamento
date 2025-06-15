@@ -10,7 +10,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import br.com.snapcast.domain.entities.VideoEvento;
 import br.com.snapcast.domain.port.BaixarArquivo;
 import br.com.snapcast.exception.ErroAoProcessarArquivo;
-import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.java.Log;
 
 @Log

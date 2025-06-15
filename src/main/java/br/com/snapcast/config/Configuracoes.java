@@ -16,7 +16,4 @@ public class Configuracoes {
     @ConfigProperty(name = "app.buffer.size", defaultValue = "8192")
     private int bufferSize;
 
-    @ConfigProperty(name = "video.storage.path", defaultValue = "/opt/snapcast/processamento/videos")
-    private String baseStoragePath;
-
 }

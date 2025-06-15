@@ -23,13 +23,13 @@ public class ZiparArquivoUserCase {
     private static final String ZIP_EXTENSION = ".zip";
     private Configuracoes configuracoes;
 
-    public synchronized void ziparArquivo(String caminho, String nome) {
+    public synchronized String ziparFrames(String caminho, String nome) {
 
         Path inpuPath = Path.of(caminho);
         String arquivoTemporario = Paths.get(configuracoes.getDiretorioVideos()).resolve(nome).toString()
                 + ZIP_EXTENSION;
 
-        log.info("Compactando para ZIP...");
+        log.info("📦 Compactando para ZIP...");
         try (FileOutputStream fos = new FileOutputStream(arquivoTemporario);
                 ZipOutputStream zos = new ZipOutputStream(fos)) {
 
@@ -54,7 +54,7 @@ public class ZiparArquivoUserCase {
             e.printStackTrace();
         }
 
-        log.info("Excluindo arquivos temporários...");
+        log.info("🗑️ Excluindo arquivos temporários...");
 
         try {
             Files.walk(inpuPath)
@@ -71,7 +71,8 @@ public class ZiparArquivoUserCase {
             e.printStackTrace();
         }
 
-        log.info("Processo concluído. Arquivo ZIP criado: " + arquivoTemporario);
+        log.info("✅ Processo concluído. 📦 Arquivo  ZIP criado: " + arquivoTemporario);
+        return arquivoTemporario;
     }
 
 }

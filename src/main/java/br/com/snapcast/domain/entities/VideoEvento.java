@@ -1,6 +1,8 @@
 package br.com.snapcast.domain.entities;
 
-public record VideoEvento(String nome,
+public record VideoEvento(
+        String id,
+        String nome,
         String formatoVideo,
         Long tamanhoVideo,
         String caminhoVideo) {
