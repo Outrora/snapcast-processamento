@@ -56,7 +56,6 @@ class ExtrairFramesTest {
 
     @Test
     void deveSepararFramesComSucesso() throws Exception {
-        // Arrange
         String inputDir = videoFile.getAbsolutePath();
         int expectedFrames = 10;
 
@@ -65,10 +64,8 @@ class ExtrairFramesTest {
                 eq(tempDir)))
                 .thenReturn(expectedFrames);
 
-        // Act
         int actualFrames = extrairFrames.separarFramesVideo(inputDir, tempDir);
 
-        // Assert
         assertThat(actualFrames).isEqualTo(expectedFrames);
         verify(extrairImagem).processarFrames(any(FFmpegFrameGrabber.class),
                 any(Java2DFrameConverter.class),
@@ -77,11 +74,9 @@ class ExtrairFramesTest {
 
     @Test
     void deveLancarExcecaoQuandoOcorrerErro() {
-        // Arrange
         String inputDir = "/path/to/video.mp4";
         Path tempPath = Path.of("/temp/path");
 
-        // Act & Assert
         assertThatThrownBy(() -> extrairFrames.separarFramesVideo(inputDir, tempPath))
                 .isInstanceOf(ErroAoProcessarArquivo.class);
     }
