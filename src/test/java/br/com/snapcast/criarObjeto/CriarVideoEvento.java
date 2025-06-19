@@ -17,4 +17,10 @@ public abstract class CriarVideoEvento {
                 ".....");
     }
 
+    public static VideoEvento criarNomeErrado() {
+        return new VideoEvento(UUID.randomUUID().toString() + ".", UUID.randomUUID().toString() + ".",
+                formas.get(random.nextInt(formas.size())), random.nextLong(),
+                ".....");
+    }
+
 }

@@ -2,6 +2,7 @@ package br.com.snapcast.config;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import jakarta.annotation.Generated;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 @ApplicationScoped
 @NoArgsConstructor
 @Getter
+@Generated("br.com.snapcast.config.ClienteS3")
 public class ClienteS3 {
     @ConfigProperty(name = "aws.regiao", defaultValue = "us-east-1")
     private String regiao;

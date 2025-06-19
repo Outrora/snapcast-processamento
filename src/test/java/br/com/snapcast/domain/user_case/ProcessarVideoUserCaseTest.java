@@ -22,6 +22,7 @@ import br.com.snapcast.config.Configuracoes;
 import br.com.snapcast.criarObjeto.CriarVideoEvento;
 import br.com.snapcast.event.producer.AtualizarStatusEvent;
 import br.com.snapcast.exception.ErroAoProcessarArquivo;
+import br.com.snapcast.exception.ErroAoProcessarArquivoTest;
 import br.com.snapcast.port.BaixarArquivo;
 import br.com.snapcast.port.EnviarArquivo;
 import br.com.snapcast.port.local.ExtrairFrames;

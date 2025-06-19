@@ -1,0 +1,53 @@
+name: Java CI com verificação de cobertura
+
+on:
+  push:
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses:  actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'zulu'
+
+      - name: Build e gerar cobertura
+        run: mvn clean verify jacoco:report
+
+      - name: Instalar xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
+
+      - name: Validar cobertura mínima (70%)
+        run: |
+          echo "Lendo cobertura do jacoco.xml..."
+          COVERAGE=$(xmllint --xpath "string(//report/counter[@type='INSTRUCTION']/@covered)" target/site/jacoco/jacoco.xml)
+          MISSED=$(xmllint --xpath "string(//report/counter[@type='INSTRUCTION']/@missed)" target/site/jacoco/jacoco.xml)
+
+          TOTAL=$((COVERAGE + MISSED))
+          PERCENT=$(echo "scale=2; $COVERAGE / $TOTAL" | bc)
+
+          echo "Cobertura atual: $PERCENT"
+
+          LIMIT=0.70
+          PASS=$(echo "$PERCENT >= $LIMIT" | bc)
+
+          if [ "$PASS" -ne 1 ]; then
+            echo "❌ Falha: cobertura de instruções ($PERCENT) abaixo de 70%."
+            exit 1
+          else
+            echo "✅ Cobertura de instruções ($PERCENT) OK."
+          fi
+
+      - name: Publicar relatório de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-jacoco
+          path: target/site/jacoco/index.html

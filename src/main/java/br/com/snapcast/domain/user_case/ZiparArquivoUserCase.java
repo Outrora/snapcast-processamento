@@ -23,9 +23,9 @@ public class ZiparArquivoUserCase {
     private static final String ZIP_EXTENSION = ".zip";
     private Configuracoes configuracoes;
 
-    public synchronized String ziparFrames(String caminho, String nome) {
+    public synchronized String ziparFrames(String caminhoImagens, String nome) {
 
-        Path inpuPath = Path.of(caminho);
+        Path inpuPath = Path.of(caminhoImagens);
         String arquivoTemporario = Paths.get(configuracoes.getDiretorioVideos()).resolve(nome).toString()
                 + ZIP_EXTENSION;
 
@@ -46,26 +46,13 @@ public class ZiparArquivoUserCase {
                                 zos.write(buffer, 0, len);
                             }
                             zos.closeEntry();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        log.info("🗑️ Excluindo arquivos temporários...");
-
-        try {
-            Files.walk(inpuPath)
-                    .filter(Files::isRegularFile)
-                    .forEach(path -> {
-                        try {
                             Files.delete(path);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
+
+            log.info("🗑️ Excluindo arquivos temporários...");
             Files.deleteIfExists(inpuPath);
         } catch (IOException e) {
             e.printStackTrace();
