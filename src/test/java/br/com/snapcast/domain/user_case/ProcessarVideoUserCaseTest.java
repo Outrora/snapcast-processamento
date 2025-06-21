@@ -22,7 +22,6 @@ import br.com.snapcast.config.Configuracoes;
 import br.com.snapcast.criarObjeto.CriarVideoEvento;
 import br.com.snapcast.event.producer.AtualizarStatusEvent;
 import br.com.snapcast.exception.ErroAoProcessarArquivo;
-import br.com.snapcast.exception.ErroAoProcessarArquivoTest;
 import br.com.snapcast.port.BaixarArquivo;
 import br.com.snapcast.port.EnviarArquivo;
 import br.com.snapcast.port.local.ExtrairFrames;
@@ -79,7 +78,7 @@ class ProcessarVideoUserCaseTest {
         verify(extrairImagem, times(1)).separarFramesVideo(anyString(), any());
         verify(ziparArquivo, times(1)).ziparFrames(anyString(), anyString());
         verify(enviarArquivo, times(1)).enviarArquivo(anyString(), anyString());
-        verify(atualizarStatus, times(1)).enviarStatusVideo(any());
+        verify(atualizarStatus, times(2)).enviarStatusVideo(any());
 
     }
 
