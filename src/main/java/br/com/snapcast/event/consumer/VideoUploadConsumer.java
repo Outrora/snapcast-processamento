@@ -46,9 +46,11 @@ public class VideoUploadConsumer {
 
     }
 
-    public void falharAoProcessar(VideoEvento evento) {
+    public CompletionStage<Void> falharAoProcessar(Message<VideoEvento> mensagem) {
+        VideoEvento evento = mensagem.getPayload();
         log.log(Level.SEVERE, "❌ Erro ao processar Arquivo");
         atualizarStatusEvent.enviarStatusVideo(StatusVideo.erroAoProcessar(evento.id()));
+        return mensagem.ack();
     }
 
 }

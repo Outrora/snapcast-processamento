@@ -82,12 +82,18 @@ class VideoUploadConsumerTest {
         @Test
         void deveChamarEnviarStatusNoMetodoFalharAoProcessar() {
                 var evento = CriarVideoEvento.criar();
+                Message<VideoEvento> mensagem = mock();
+
+                when(mensagem.getPayload()).thenReturn(evento);
+                when(mensagem.ack()).thenReturn(CompletableFuture.completedFuture(null));
+
+
 
                 doNothing()
                                 .when(atualizarStatusEvent)
                                 .enviarStatusVideo(any());
 
-                consumer.falharAoProcessar(evento);
+                consumer.falharAoProcessar(mensagem);
 
                 ArgumentCaptor<StatusVideo> statusVideo = ArgumentCaptor.forClass(StatusVideo.class);
 
