@@ -5,7 +5,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -23,73 +22,73 @@ import br.com.snapcast.event.producer.AtualizarStatusEvent;
 
 class VideoUploadConsumerTest {
 
-    @Mock
-    ProcessarVideoUserCase processarVideoUserCase;
+        @Mock
+        ProcessarVideoUserCase processarVideoUserCase;
 
-    @Mock
-    AtualizarStatusEvent atualizarStatusEvent;
+        @Mock
+        AtualizarStatusEvent atualizarStatusEvent;
 
-    VideoUploadConsumer consumer;
+        VideoUploadConsumer consumer;
 
-    AutoCloseable openMocks;
+        AutoCloseable openMocks;
 
-    @BeforeEach
-    void init() {
-        openMocks = MockitoAnnotations.openMocks(this);
-        consumer = new VideoUploadConsumer(processarVideoUserCase, atualizarStatusEvent);
-    }
+        @BeforeEach
+        void init() {
+                openMocks = MockitoAnnotations.openMocks(this);
+                consumer = new VideoUploadConsumer(processarVideoUserCase, atualizarStatusEvent);
+        }
 
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
-    }
+        @AfterEach
+        void tearDown() throws Exception {
+                openMocks.close();
+        }
 
-    @Test
-    void deveChamarOUseCaseCorretamente() throws Exception {
-        var evento = CriarVideoEvento.criar();
+        @Test
+        void deveChamarOUseCaseCorretamente() throws Exception {
+                var evento = CriarVideoEvento.criar();
 
-        doNothing()
-                .when(processarVideoUserCase)
-                .processarArquivo(any());
+                doNothing()
+                                .when(processarVideoUserCase)
+                                .processarArquivo(any());
 
-        consumer.receberVideo(evento);
+                consumer.receberVideo(evento);
 
-        verify(processarVideoUserCase, times(1))
-                .processarArquivo(evento);
-    }
+                verify(processarVideoUserCase, times(1))
+                                .processarArquivo(evento);
+        }
 
-    @Test
-    void deveChamarUseCaseRetornarUmErro() throws Exception {
-        var evento = CriarVideoEvento.criar();
+        @Test
+        void deveChamarUseCaseRetornarUmErro() throws Exception {
+                var evento = CriarVideoEvento.criar();
 
-        doThrow(new RuntimeException())
-                .when(processarVideoUserCase)
-                .processarArquivo(any());
+                doThrow(new RuntimeException())
+                                .when(processarVideoUserCase)
+                                .processarArquivo(any());
 
-        assertThatThrownBy(() -> consumer.receberVideo(evento))
-                .isInstanceOf(RuntimeException.class);
+                assertThatThrownBy(() -> consumer.receberVideo(evento))
+                                .isInstanceOf(RuntimeException.class);
 
-        verify(processarVideoUserCase, times(1))
-                .processarArquivo(evento);
-    }
+                verify(processarVideoUserCase, times(1))
+                                .processarArquivo(evento);
+        }
 
-    @Test
-    void deveChamarEnviarStatusNoMetodoFalharAoProcessar() {
-        var evento = CriarVideoEvento.criar();
+        @Test
+        void deveChamarEnviarStatusNoMetodoFalharAoProcessar() {
+                var evento = CriarVideoEvento.criar();
 
-        doNothing()
-                .when(atualizarStatusEvent)
-                .enviarStatusVideo(any());
+                doNothing()
+                                .when(atualizarStatusEvent)
+                                .enviarStatusVideo(any());
 
-        consumer.falharAoProcessar(evento);
+                consumer.falharAoProcessar(evento);
 
-        ArgumentCaptor<StatusVideo> statusVideo = ArgumentCaptor.forClass(StatusVideo.class);
+                ArgumentCaptor<StatusVideo> statusVideo = ArgumentCaptor.forClass(StatusVideo.class);
 
-        verify(atualizarStatusEvent, times(1))
-                .enviarStatusVideo(statusVideo.capture());
+                verify(atualizarStatusEvent, times(1))
+                                .enviarStatusVideo(statusVideo.capture());
 
-        assertThat(statusVideo.getValue().id()).isEqualTo(evento.id());
-        assertThat(statusVideo.getValue().quantidadeFrames()).isEqualTo(0);
-    }
+                assertThat(statusVideo.getValue().id()).isEqualTo(evento.id());
+                assertThat(statusVideo.getValue().quantidadeFrames()).isZero();
+        }
 
 }

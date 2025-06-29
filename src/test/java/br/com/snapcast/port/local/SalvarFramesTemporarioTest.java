@@ -47,7 +47,7 @@ class SalvarFramesTemporarioTest {
     }
 
     @Test
-    void deveSalvarFrameComSucesso() throws IOException {
+    void deveSalvarFrameComSucesso() {
         // given
         int frameNumber = 1;
         String outputPath = tempDir.toString();
@@ -88,10 +88,12 @@ class SalvarFramesTemporarioTest {
 
         @Override
         public void flush() {
+            // Metodo vazio pois e teste
         }
 
         @Override
         public void close() throws SecurityException {
+            // Metodo vazio pois e teste
         }
     }
 }

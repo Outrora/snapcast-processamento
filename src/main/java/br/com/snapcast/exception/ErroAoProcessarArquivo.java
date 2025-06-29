@@ -8,10 +8,10 @@ import lombok.extern.java.Log;
 @Log
 public class ErroAoProcessarArquivo extends RuntimeException {
 
-    private final static String mensagem = "❌ Erro ao processar o arquivo";
+    private static final String MENSAGEM = "❌ Erro ao processar o arquivo";
 
     public ErroAoProcessarArquivo() {
-        super(mensagem);
+        super(MENSAGEM);
     }
 
     public ErroAoProcessarArquivo(VideoEvento evento, Throwable throwable) {

@@ -39,7 +39,7 @@ class AtulizadoStatusEventTest {
 
     @Test
     void deveEnviarUmMensagemCorretamente() {
-        var videoProcessado = StatusVideo.videoProcessado(UUID.randomUUID().toString(), 050);
+        var videoProcessado = StatusVideo.processamentoConcluido(UUID.randomUUID().toString(), 050);
 
         when(emitter.send(any(StatusVideo.class))).thenReturn(CompletableFuture.completedFuture(null));
         event.enviarStatusVideo(videoProcessado);

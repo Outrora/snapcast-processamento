@@ -39,10 +39,13 @@ public class ProcessarVideoUserCase {
 
     public void processarArquivo(VideoEvento evento) throws Exception {
         log.log(Level.INFO, "🎥 Iniciando processamento do vídeo: {0}", evento.nomeDoVideo());
+
         Path pathTemporario = Paths.get(configuracoes.getDiretorioVideos()).resolve(evento.nomeDoVideo());
 
         // Baixado Arquivo do S3
         String videoTemporario = baixarArquivo.baixarArquivo(evento);
+
+        atualizarStatus.enviarStatusVideo(StatusVideo.iniciandoProcessamento(evento.id()));
 
         // Separando Os Frames
         Integer quantidadeFramesSalvo = extrairFrames.separarFramesVideo(videoTemporario, pathTemporario);
@@ -57,7 +60,7 @@ public class ProcessarVideoUserCase {
         deletandoArquivosTemporarios(List.of(pathZip, videoTemporario));
 
         // Atualizar que processamento foi concluído
-        atualizarStatus.enviarStatusVideo(StatusVideo.videoProcessado(evento.id(), quantidadeFramesSalvo));
+        atualizarStatus.enviarStatusVideo(StatusVideo.processamentoConcluido(evento.id(), quantidadeFramesSalvo));
 
         log.log(Level.INFO, "🎥 Finalizado processamento do vídeo: {0}", evento.nomeDoVideo());
     }
