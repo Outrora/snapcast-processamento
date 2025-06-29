@@ -1,7 +1,9 @@
 package br.com.snapcast.event.consumer;
 
+import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -15,6 +17,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.eclipse.microprofile.reactive.messaging.Message;
 
 @Log
 @ApplicationScoped
@@ -29,10 +32,13 @@ public class VideoUploadConsumer {
     @RunOnVirtualThread
     @Retry(delay = 10, maxRetries = 5)
     @Fallback(fallbackMethod = "falharAoProcessar")
-    public void receberVideo(VideoEvento evento) throws Exception {
+    @Bulkhead(value = 3)
+    public CompletionStage<Void> receberVideo(Message<VideoEvento> mensagem) throws Exception {
+        VideoEvento evento = mensagem.getPayload();
         log.info("🛬 Recebendo arquivo para Processar: %s".formatted(evento.nome()));
         try {
             userCaseProcessar.processarArquivo(evento);
+            return mensagem.ack();
         } catch (Exception e) {
             log.log(Level.SEVERE, e.getMessage());
             throw e;
