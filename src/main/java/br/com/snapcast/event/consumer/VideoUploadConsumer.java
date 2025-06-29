@@ -32,7 +32,7 @@ public class VideoUploadConsumer {
     @RunOnVirtualThread
     @Retry(delay = 10, maxRetries = 5)
     @Fallback(fallbackMethod = "falharAoProcessar")
-    @Bulkhead(value = 3)
+    @Bulkhead(value = 2)
     public CompletionStage<Void> receberVideo(Message<VideoEvento> mensagem) throws Exception {
         VideoEvento evento = mensagem.getPayload();
         log.info("🛬 Recebendo arquivo para Processar: %s".formatted(evento.nome()));
