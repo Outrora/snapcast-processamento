@@ -1,13 +1,12 @@
 package br.com.snapcast.event.consumer;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
+import br.com.snapcast.domain.entities.VideoEvento;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,8 @@ import br.com.snapcast.criarObjeto.CriarVideoEvento;
 import br.com.snapcast.domain.entities.StatusVideo;
 import br.com.snapcast.domain.user_case.ProcessarVideoUserCase;
 import br.com.snapcast.event.producer.AtualizarStatusEvent;
+
+import java.util.concurrent.CompletableFuture;
 
 class VideoUploadConsumerTest {
 
@@ -45,13 +46,16 @@ class VideoUploadConsumerTest {
 
         @Test
         void deveChamarOUseCaseCorretamente() throws Exception {
+                Message<VideoEvento> mensagem = mock();
                 var evento = CriarVideoEvento.criar();
 
+                when(mensagem.ack()).thenReturn(CompletableFuture.completedFuture(null));
+                when(mensagem.getPayload()).thenReturn(evento);
                 doNothing()
                                 .when(processarVideoUserCase)
                                 .processarArquivo(any());
 
-                consumer.receberVideo(evento);
+                consumer.receberVideo(mensagem);
 
                 verify(processarVideoUserCase, times(1))
                                 .processarArquivo(evento);
@@ -59,13 +63,16 @@ class VideoUploadConsumerTest {
 
         @Test
         void deveChamarUseCaseRetornarUmErro() throws Exception {
+                Message<VideoEvento> mensagem = mock();
                 var evento = CriarVideoEvento.criar();
+
+                when(mensagem.getPayload()).thenReturn(evento);
 
                 doThrow(new RuntimeException())
                                 .when(processarVideoUserCase)
                                 .processarArquivo(any());
 
-                assertThatThrownBy(() -> consumer.receberVideo(evento))
+                assertThatThrownBy(() -> consumer.receberVideo(mensagem))
                                 .isInstanceOf(RuntimeException.class);
 
                 verify(processarVideoUserCase, times(1))
