@@ -1,62 +1,54 @@
-# snapcast-processamento
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+# 🎥 Snapcast Processamento
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+![JAVA](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![Quarkus](https://img.shields.io/badge/QUARKUS-009CAB?style=for-the-badge&logo=quarkus&logoColor=white)
+![Kakfa](https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)
 
-## Running the application in dev mode
+Microserviço responsável pelo processamento de vídeos, incluindo download, extração de frames, compactação e upload para o S3.
 
-You can run your application in dev mode that enables live coding using:
+## ⚡ Principais Funcionalidades
 
-```shell script
+### 🔄 Processamento de Vídeos
+- 📥 Download automático de vídeos do S3
+- 🎞️ Extração de frames dos vídeos
+- 💾 Armazenamento temporário de frames
+- 🗜️ Compactação dos frames processados
+- 📤 Upload do arquivo compactado para S3
+
+### 🔌 Integrações
+- 📦 AWS S3 para armazenamento
+- 📬 Sistema de filas para comunicação assíncrona
+- 📊 Monitoramento de status do processamento
+
+## 🛠️ Como Executar
+
+```shell
 ./mvnw quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
+### 🧪 Testes
+Execute:
 ```shell script
-./mvnw package
+./mvnw test
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+## 🔧 Configuração
+Necessário configurar as seguintes variáveis de ambiente:
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+```
+KAFKA_URL=
+AWS_REGION=
+CLIENT_ID=
+USER_POOL_ID=
+DOMAIN=
+BUCKET=
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+## 📜 Documentação API
+Swagger UI disponível em: ***/q/swagger-ui***
 
-## Creating a native executable
+## 📈 Diagrama de Sequência
 
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/snapcast-processamento-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+[![](https://mermaid.ink/img/pako:eNqNk82OmzAUhV_F8mxJBIYE8KIShPypmqpSpq1UiCo3OAkK2MiYTmaSPEzVRVez7BPkxWpMMk00bTVeIPve79x7bOMdXPCUQgxXgpRrcBclDKgRxFN2fFpkfA46nTcgjCN-z3JOUpBy8PH4lFLezGb2vOVDjQ3i4VYKcvx5_KHSFIwEKWh1QgYaieJAFOSRMpVhkoM7WpRcHL8L1arlIs0N4wEvSrKQ52q8ui431Ngo_lBqWyUR5I-dkU6O41FWqEgbq-qv7R7fC76gVXXh8NLgXoeAtQeRFc9I_o0IsGxCX6xuyVbzv7BIseiaRf9i3ynWvmbZBUtZ-sLvlEm60qf662x1EgefZs1229u53PSkXUzjt2S5IS2wv6WsIiv12YOgzY_bxEwSWavo9GV7-ZBTEIBlluf4xlTDC41KCr6h-Ma27dO8c5-lco1Rub2UjU8yZIYoCF4tm5xkTqi6oVfLps8m-45p_lcGDfWjZynEUtTUgAVVP2OzhLumYALlmhY0gVhNUyI2CUzYQWlKwj5zXpxlgterNcRLkldqVZcpkTTKiLqk4jkq1FlSMeA1kxAj5OoiEO_gFmLLtru25fZcx_cdz7eRZ8AHiH2n6_g913eR1zdRz3IOBnzUbc2u2zMdD_UtzzM91-k7BqRpJrm4bV-vfsSH38_FMNU?type=png)](https://mermaid.live/edit#pako:eNqNk82OmzAUhV_F8mxJBIYE8KIShPypmqpSpq1UiCo3OAkK2MiYTmaSPEzVRVez7BPkxWpMMk00bTVeIPve79x7bOMdXPCUQgxXgpRrcBclDKgRxFN2fFpkfA46nTcgjCN-z3JOUpBy8PH4lFLezGb2vOVDjQ3i4VYKcvx5_KHSFIwEKWh1QgYaieJAFOSRMpVhkoM7WpRcHL8L1arlIs0N4wEvSrKQ52q8ui431Ngo_lBqWyUR5I-dkU6O41FWqEgbq-qv7R7fC76gVXXh8NLgXoeAtQeRFc9I_o0IsGxCX6xuyVbzv7BIseiaRf9i3ynWvmbZBUtZ-sLvlEm60qf662x1EgefZs1229u53PSkXUzjt2S5IS2wv6WsIiv12YOgzY_bxEwSWavo9GV7-ZBTEIBlluf4xlTDC41KCr6h-Ma27dO8c5-lco1Rub2UjU8yZIYoCF4tm5xkTqi6oVfLps8m-45p_lcGDfWjZynEUtTUgAVVP2OzhLumYALlmhY0gVhNUyI2CUzYQWlKwj5zXpxlgterNcRLkldqVZcpkTTKiLqk4jkq1FlSMeA1kxAj5OoiEO_gFmLLtru25fZcx_cdz7eRZ8AHiH2n6_g913eR1zdRz3IOBnzUbc2u2zMdD_UtzzM91-k7BqRpJrm4bV-vfsSH38_FMNU)

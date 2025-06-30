@@ -3,6 +3,7 @@ package br.com.snapcast.event.consumer;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 
+import io.micrometer.core.annotation.Counted;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
@@ -24,6 +25,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class VideoUploadConsumer {
 
+
     ProcessarVideoUserCase userCaseProcessar;
 
     AtualizarStatusEvent atualizarStatusEvent;
@@ -33,6 +35,7 @@ public class VideoUploadConsumer {
     @Retry(delay = 10, maxRetries = 5)
     @Fallback(fallbackMethod = "falharAoProcessar")
     @Bulkhead(value = 2)
+    @Counted(value = "receberVideo.sucesso", extraTags = { "sucesso" })
     public CompletionStage<Void> receberVideo(Message<VideoEvento> mensagem) throws Exception {
         VideoEvento evento = mensagem.getPayload();
         log.info("🛬 Recebendo arquivo para Processar: %s".formatted(evento.nome()));
@@ -46,6 +49,7 @@ public class VideoUploadConsumer {
 
     }
 
+    @Counted(value = "receberVideo.erro", extraTags = { "Erro" })
     public CompletionStage<Void> falharAoProcessar(Message<VideoEvento> mensagem) {
         VideoEvento evento = mensagem.getPayload();
         log.log(Level.SEVERE, "❌ Erro ao processar Arquivo");
